@@ -9,14 +9,18 @@ classdef NotGate < Component
 
             % encode shape
             obj.shape = {[  % triangle
-                [3; 2], [0; 7], [-3; 2], [3; 2]
+                [2; -3], [7; 0], [2; 3], [2; -3]
             ], [            % input pin
-                [0; 0], [0; 2]
+                [0; 0], [2; 0]
             ], [            % output pin
-                [0; 8], [0; 9]
+                [8; 0], [9; 0]
             ], [            % not circle
-                build_circle([0; 7.5], 0.5)
-            ]}
+                build_circle([7.5; 0], 0.5)
+            ]};
+
+            % encode pin positions
+            obj.input_pin_displacements = [[0; 0]];
+            obj.output_pin_displacements = [[9; 0]];
         end
 
         function update(obj)

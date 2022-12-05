@@ -8,19 +8,23 @@ classdef OrGate < Component
             obj.output_pins = logical([0]);
 
             % encode shape
-            obj.shape = {[  % right curve
-                build_arc([3; 2], [0; 7], 7)
+            obj.shape = {[  % bottom curve
+                build_arc([2; -3], [7; 0], 7)
+            ], [            % top curve
+                build_arc([7; 0], [2; 3], 7)
             ], [            % left curve
-                build_arc([0; 7], [-3; 2], 7)
-            ], [            % bottom curve
-                build_arc([3; 2], [-3; 2], 6)
+                build_arc([2; -3], [2; 3], 6)
             ], [            % input pins
-                [-2; 0], [-2; 2.45]
+                [0; -2], [2.45; -2]
             ], [
-                [2; 0], [2; 2.45]
+                [0; 2], [2.45; 2]
             ], [            % output pin
-                [0; 7], [0; 9]
+                [7; 0], [9; 0]
             ]};
+
+           % encode pin positions
+           obj.input_pin_displacements = [[0; -2], [0; 2]];
+           obj.output_pin_displacements = [[9; 0]]; 
         end
 
         function update(obj)

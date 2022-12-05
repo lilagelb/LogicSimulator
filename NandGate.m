@@ -4,25 +4,29 @@ classdef NandGate < Component
     methods        
         function obj = NandGate(position)
             obj@Component(position);
+
+            % set up pins
             obj.input_pins  = logical([0 0]);
             obj.output_pins = logical([0]);
             
             % encode shape
-            span = -3:0.1:3;
-            obj.shape = {[  % base tub
-                -3 -3  3  3
-                 4  2  2  4
-            ], [            % top curve
-                build_arc([3; 4], [-3; 4], 3)
+            obj.shape = {[  % left tub
+                [4; -3], [2; -3], [2; 3], [4; 3]
+            ], [            % curve
+                build_arc([4; -3], [4; 3], 3)
             ], [            % input pins
-                [-2; 0], [-2; 2]
+                [0; -2], [2; -2]
             ], [
-                [2; 0], [2; 2]
+                [0; 2], [2; 2]
             ], [            % output pin
-                [0; 8], [0; 8]
+                [8; 0], [9; 0]
             ], [            % not circle
-                build_circle([0; 7.5], 0.5)
+                build_circle([7.5; 0], 0.5)
             ]};
+
+            % encode pin positions
+            obj.input_pin_displacements = [[0; -2], [0; 2]];
+            obj.output_pin_displacements = [[9; 0]];
         end
 
         function update(obj)

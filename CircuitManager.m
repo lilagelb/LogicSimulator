@@ -51,6 +51,19 @@ classdef CircuitManager < handle
                 end
             end
         end
+
+        function draw(obj)
+            %DRAW Draws the logic circuit, with the components in blue and
+            %links in red
+            for id = 1:length(obj.components)
+                obj.components{id}.draw();
+            end
+            for link = obj.links
+                start_pos = obj.components{link.from_component}.get_output_pin_position(link.from_pin);
+                end_pos = obj.components{link.to_component}.get_input_pin_position(link.to_pin);
+                plot([start_pos, end_pos], "r");
+            end
+        end
     end
 
 end

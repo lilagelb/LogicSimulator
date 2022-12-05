@@ -1,9 +1,9 @@
 circuit = CircuitManager();
-not_gate = circuit.add_component(NotGate([0; 0]));
+circuit.add_component(XorGate([0; 0]));
 
-circuit.components{not_gate}.draw();
+circuit.draw();
 
 
-axis([-5 5 -0 10]);
+axis([0 10 -5 5]);
 axis square;
 grid on;
