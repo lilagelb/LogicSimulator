@@ -34,6 +34,11 @@ classdef Component < handle
             %COMPONENT Construct an instance of this class
             obj.position = position;
         end
+
+        function additional_draw(obj)
+            %ADDITIONAL_DRAW For overriding by components that require more
+            %than a simple shape (e.g. text) to be drawn for their symbol
+        end
     end
     methods (Access = public)
         function output = update(obj)
@@ -50,7 +55,19 @@ classdef Component < handle
                 plot(line(1, :), line(2, :), "b");
                 hold on;
             end
+            obj.additional_draw();
             hold off;
+        end
+
+        function pos = get_input_pin_position(obj, pin_number)
+            %GET_INPUT_PIN_POSITION Returns the position of the specified
+            %input pin on the plot, to allow lines to be drawn to/from it
+            pos = obj.position + obj.input_pin_displacements(:, pin_number);
+        end
+        function pos = get_output_pin_position(obj, pin_number)
+            %GET_OUTPUT_PIN_POSITION Returns the position of the specified
+            %output pin on the plot, to allow lines to be drawn to/from it
+            pos = obj.position + obj.output_pin_displacements(:, pin_number);
         end
     end
 end

@@ -1,9 +1,21 @@
-circuit = CircuitManager();
-circuit.add_component(XorGate([0; 0]));
+circuit = CircuitManager;
+
+input_0 = circuit.add_component(Input([0; -3], "in 0"));
+input_1 = circuit.add_component(Input([0; 3], "in 1"));
+xor_gate = circuit.add_component(XorGate([15; -5]));
+and_gate = circuit.add_component(AndGate([15; 5]));
+output_0 = circuit.add_component(Output([30; -3], "out 0"));
+output_1 = circuit.add_component(Output([30; 3], "out 1"));
+
+circuit.add_link(input_0, 1, xor_gate, 1);
+circuit.add_link(input_0, 1, and_gate, 1);
+circuit.add_link(input_1, 1, xor_gate, 2);
+circuit.add_link(input_1, 1, and_gate, 2);
+circuit.add_link(xor_gate, 1, output_0, 1);
+circuit.add_link(and_gate, 1, output_1, 1);
 
 circuit.draw();
 
-
-axis([0 10 -5 5]);
-axis square;
+axis padded;
+axis equal;
 grid on;

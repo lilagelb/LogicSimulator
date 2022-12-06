@@ -57,11 +57,13 @@ classdef CircuitManager < handle
             %links in red
             for id = 1:length(obj.components)
                 obj.components{id}.draw();
+                hold on;
             end
             for link = obj.links
+                link
                 start_pos = obj.components{link.from_component}.get_output_pin_position(link.from_pin);
                 end_pos = obj.components{link.to_component}.get_input_pin_position(link.to_pin);
-                plot([start_pos, end_pos], "r");
+                plot([start_pos(1), end_pos(1)], [start_pos(2), end_pos(2)], "r");
             end
         end
     end
