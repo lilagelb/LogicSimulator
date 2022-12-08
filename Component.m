@@ -35,7 +35,7 @@ classdef Component < handle
             obj.position = position;
         end
 
-        function additional_draw(obj)
+        function additional_draw(obj, axes)
             %ADDITIONAL_DRAW For overriding by components that require more
             %than a simple shape (e.g. text) to be drawn for their symbol
         end
@@ -46,17 +46,17 @@ classdef Component < handle
             output = false;
         end
 
-        function draw(obj)
+        function draw(obj, axes)
             %DRAW Draws the component's symbol with its centre at its
             %position
             num_lines = length(obj.shape);
             for i = 1:num_lines
                 line = translate_shape(obj.shape{i}, obj.position(1), obj.position(2));
-                plot(line(1, :), line(2, :), "b");
-                hold on;
+                plot(axes, line(1, :), line(2, :), "b");
+                hold(axes, "on");
             end
-            obj.additional_draw();
-            hold off;
+            obj.additional_draw(axes);
+            hold(axes, "off");
         end
 
         function pos = get_input_pin_position(obj, pin_number)
@@ -68,6 +68,27 @@ classdef Component < handle
             %GET_OUTPUT_PIN_POSITION Returns the position of the specified
             %output pin on the plot, to allow lines to be drawn to/from it
             pos = obj.position + obj.output_pin_displacements(:, pin_number);
+        end
+
+        function [pin, input] = get_pin_from_position(obj, position)
+            %GET_PIN_FROM_POSITION If the passed position is the end of one
+            %of the component's pins, return that pin, otherwise 0.
+            %If the pin is an input pin, input=true, otherwise input=false
+            input = false;
+            pin = 0;
+            for n = 1:length(obj.input_pins)
+                if obj.get_input_pin_position(n) == position
+                    pin = n;
+                    input = true;
+                    return;
+                end
+            end
+            for n = 1:length(obj.output_pins)
+                if obj.get_output_pin_position(n) == position
+                    pin = n;
+                    return;
+                end
+            end
         end
     end
 end

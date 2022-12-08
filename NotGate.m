@@ -13,14 +13,14 @@ classdef NotGate < Component
             ], [            % input pin
                 [0; 0], [2; 0]
             ], [            % output pin
-                [8; 0], [9; 0]
+                [8; 0], [10; 0]
             ], [            % not circle
                 build_circle([7.5; 0], 0.5)
             ]};
 
             % encode pin positions
             obj.input_pin_displacements = [[0; 0]];
-            obj.output_pin_displacements = [[9; 0]];
+            obj.output_pin_displacements = [[10; 0]];
         end
 
         function update(obj)

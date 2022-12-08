@@ -11,22 +11,22 @@ classdef NandGate < Component
             
             % encode shape
             obj.shape = {[  % left tub
-                [4; -3], [2; -3], [2; 3], [4; 3]
+                [5; -3], [2; -3], [2; 3], [5; 3]
             ], [            % curve
-                build_arc([4; -3], [4; 3], 3)
+                build_arc([5; -3], [5; 3], 3)
             ], [            % input pins
                 [0; -2], [2; -2]
             ], [
                 [0; 2], [2; 2]
             ], [            % output pin
-                [8; 0], [9; 0]
+                [9; 0], [10; 0]
             ], [            % not circle
-                build_circle([7.5; 0], 0.5)
+                build_circle([8.5; 0], 0.5)
             ]};
 
             % encode pin positions
             obj.input_pin_displacements = [[0; -2], [0; 2]];
-            obj.output_pin_displacements = [[9; 0]];
+            obj.output_pin_displacements = [[10; 0]];
         end
 
         function update(obj)

@@ -32,8 +32,8 @@ classdef Output < Component
         end
     end
     methods (Access = protected)
-        function additional_draw(obj)
-            text(obj.position(1) + 1.5, obj.position(2), obj.label, "Color", "blue");
+        function additional_draw(obj, axes)
+            text(axes, obj.position(1) + 1.5, obj.position(2), obj.label, "Color", "blue");
         end
     end
 end

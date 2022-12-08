@@ -14,8 +14,16 @@ circuit.add_link(input_1, 1, and_gate, 2);
 circuit.add_link(xor_gate, 1, output_0, 1);
 circuit.add_link(and_gate, 1, output_1, 1);
 
-circuit.draw();
+a = axes(ButtonDownFcn=@callback);
+a.Interactions = [panInteraction, rulerPanInteraction, zoomInteraction];
+circuit.draw(a);
 
 axis padded;
 axis equal;
 grid on;
+
+function callback(src, event)
+    src
+    hold on;
+    plot(src, event.IntersectionPoint(1), event.IntersctionPoint(2), "kx");
+end

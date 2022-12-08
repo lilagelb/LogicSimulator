@@ -9,9 +9,9 @@ classdef XorGate < Component
 
             % encode shape
             obj.shape = {[  % right curve
-                build_arc([2; -3], [7; 0], 7)
+                build_arc([2; -3], [8; 0], 7)
             ], [            % left curve
-                build_arc([7; 0], [2; 3], 7)
+                build_arc([8; 0], [2; 3], 7)
             ], [            % bottom curve (main)
                 build_arc([2; -3], [2; 3], 6)
             ], [            % bottom curve (XOR)
@@ -21,12 +21,12 @@ classdef XorGate < Component
             ], [
                 [0; 2], [1.95; 2]
             ], [            % output pin
-                [7; 0], [9; 0]
+                [8; 0], [10; 0]
             ]};
 
             % encode pin positions
             obj.input_pin_displacements = [[0; -2], [0; 2]];
-            obj.output_pin_displacements = [[9; 0]]; 
+            obj.output_pin_displacements = [[10; 0]]; 
         end
 
         function update(obj)
