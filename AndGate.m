@@ -3,7 +3,7 @@ classdef AndGate < Component
     
     methods
         function obj = AndGate(position)
-            obj@Component(position);
+            obj@Component("and", position);
 
             % set up pins
             obj.input_pins  = logical([0 0]);

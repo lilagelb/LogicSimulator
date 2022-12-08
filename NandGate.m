@@ -3,7 +3,7 @@ classdef NandGate < Component
     
     methods        
         function obj = NandGate(position)
-            obj@Component(position);
+            obj@Component("nand", position);
 
             % set up pins
             obj.input_pins  = logical([0 0]);

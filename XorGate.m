@@ -3,7 +3,7 @@ classdef XorGate < Component
 
     methods
         function obj = XorGate(position)
-            obj@Component(position);
+            obj@Component("xor", position);
             obj.input_pins  = logical([0 0]);
             obj.output_pins = logical([0]);
 

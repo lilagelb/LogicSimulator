@@ -3,7 +3,7 @@ classdef OrGate < Component
     
     methods
         function obj = OrGate(position)
-            obj@Component(position);
+            obj@Component("or", position);
             obj.input_pins  = logical([0 0]);
             obj.output_pins = logical([0]);
 

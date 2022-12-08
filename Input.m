@@ -8,7 +8,7 @@ classdef Input < Component
 
     methods (Access = public)
         function obj = Input(position, label)
-            obj@Component(position);
+            obj@Component("input", position);
             obj.label = label;
 
             % set up pins

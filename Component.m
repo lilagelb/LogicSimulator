@@ -27,11 +27,15 @@ classdef Component < handle
             -0.5 0.5;
             -0.5 0.5;
         ]};
+
+        % printable type (for serialisation)
+        type_printable = "component"
     end
 
     methods (Access = protected)
-        function obj = Component(position)
+        function obj = Component(type_printable, position)
             %COMPONENT Construct an instance of this class
+            obj.type_printable = type_printable;
             obj.position = position;
         end
 
@@ -68,6 +72,15 @@ classdef Component < handle
             %GET_OUTPUT_PIN Returns the state of the given output pin
             %(either `logical(0)` or `logical(1)`)
             state = obj.output_pins(pin);
+        end
+        function position = get_position(obj)
+            %GET_POSITION Returns the position of the component
+            position = obj.position;
+        end
+        function type_printable = get_type_printable(obj)
+            %GET_TYPE_PRINTABLE Returns the printable form of the
+            %component's type (e.g. 'and' for an AND gate)
+            type_printable = obj.type_printable;
         end
 
         function pos = get_input_pin_position(obj, pin_number)

@@ -3,7 +3,7 @@ classdef NorGate < Component
     
     methods
         function obj = NorGate(position)
-            obj@Component(position);
+            obj@Component("nor", position);
             obj.input_pins  = logical([0 0]);
             obj.output_pins = logical([0]);
 

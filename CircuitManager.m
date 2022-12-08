@@ -83,6 +83,125 @@ classdef CircuitManager < handle
             end
             hold(axes, "off");
         end
-    end
 
+        function serialise(obj, filepath)
+            %SERIALISE Serialises the class data into YAML for storage,
+            %using the filepath specified
+
+            % add the metadata header
+            serialisation = sprintf( ...
+                "component-count: %d\n" + ...
+                "link-count: %d\n", ...
+                length(obj.components), length(obj.links) ...
+            );
+
+            % serialise the components
+            serialisation = serialisation + "components:\n";
+            for component_index = 1:length(obj.components)
+                component = obj.components{component_index};
+                type = component.get_type_printable();
+                position = component.get_position();
+                serialisation = serialisation + sprintf( ...
+                    "- component:\n" + ...
+                    "    type: %s\n" + ...
+                    "    position: [%d, %d]\n", ...
+                    type, ...
+                    position(1), position(2) ...
+                );
+                if type == "input" || type == "output"
+                    serialisation = serialisation + sprintf( ...
+                        "    label: %s\n", ...
+                        component.label ...
+                    );
+                end
+            end
+            
+            % serialise the links
+            serialisation = serialisation + "\nlinks:\n";
+            for link = obj.links
+                serialisation = serialisation + sprintf( ...
+                    "- link:\n" + ...
+                    "  - from:\n" + ...
+                    "      component: %d\n" + ...
+                    "      pin: %d\n" + ...
+                    "  - to:\n" + ...
+                    "      component: %d\n" + ...
+                    "      pin: %d\n", ...
+                    link.from_component, link.from_pin, ...
+                    link.to_component, link.to_pin ...
+                );
+            end
+
+            % write the serialisation to the file specified
+            filehandle = fopen(filepath, "w");
+            fprintf(filehandle, serialisation);
+            fclose(filehandle);
+        end
+
+        function deserialise(obj, filepath)
+            %DESERIALISE Deserialises the data from the filepath given and
+            %loads it into the class, overwriting existing data
+
+            % open the file
+            filehandle = fopen(filepath, "r");
+
+            % clear existing data
+            obj.components = [];
+            obj.links = [];
+            obj.next_component_id = 1;
+
+            % read and process the header
+            component_count = fscanf(filehandle, "component-count: %d\n", 1);
+            link_count = fscanf(filehandle, "link-count: %d\n", 1);
+            
+            % read the components
+            fscanf(filehandle, "\ncomponents:\n", 1);
+            for n = 1:component_count
+                type = fscanf(filehandle, ...
+                    "- component:\n" + ...
+                    "    type: %s\n", 1);
+                position = fscanf(filehandle, "    position: [%d, %d]\n", 2);
+                if type == "input" || type == "output"
+                    label = fscanf(filehandle, "    label: %s\n", 1);
+                    if type == "input"
+                        obj.add_component(Input(position, label));
+                    else
+                        obj.add_component(Output(position, label));
+                    end
+                elseif type == "not"
+                    obj.add_component(NotGate(position));
+                elseif type == "and"
+                    obj.add_component(AndGate(position));
+                elseif type == "or"
+                    obj.add_component(OrGate(position));
+                elseif type == "xor"
+                    obj.add_component(XorGate(position));
+                elseif type == "nand"
+                    obj.add_component(NandGate(position));
+                elseif type == "nor"
+                    obj.add_component(NorGate(position));
+                elseif type == "xnor"
+                    obj.add_component(XnorGate(position));
+                end
+            end
+
+            % read the links
+            fscanf(filehandle, "\nlinks:\n", 1);
+            for n = 1:link_count
+                from_component = fscanf(filehandle, ...
+                    "- link:\n" + ...
+                    "  - from:\n" + ...
+                    "      component: %d\n", 1);
+                from_pin = fscanf(filehandle, "      pin: %d\n", 1);
+                to_component = fscanf(filehandle, ...
+                    "  - to:\n" + ...
+                    "      component: %d\n", 1);
+                to_pin = fscanf(filehandle, "      pin: %d\n", 1);
+                obj.add_link(from_component, from_pin, to_component, to_pin);
+            end
+
+            % close the file
+            fclose(filehandle);
+        end
+    end
 end

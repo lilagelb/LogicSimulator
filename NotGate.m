@@ -3,7 +3,7 @@ classdef NotGate < Component
     
     methods
         function obj = NotGate(position)
-            obj@Component(position);
+            obj@Component("not", position);
             obj.input_pins  = logical([0]);
             obj.output_pins = logical([0]);
 

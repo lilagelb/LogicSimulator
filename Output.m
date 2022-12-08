@@ -8,7 +8,7 @@ classdef Output < Component
 
     methods
         function obj = Output(position, label)
-            obj@Component(position);
+            obj@Component("output", position);
             obj.label = label;
 
             % set up pins

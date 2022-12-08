@@ -1,0 +1,31 @@
+component-count: 3
+link-count: 2
+
+components:
+- component:
+    type: input
+    position: [10, 30]
+    label: in1
+- component:
+    type: not
+    position: [30, 20]
+- component:
+    type: output
+    position: [50, 10]
+    label: out1
+
+links:
+- link:
+  - from:
+      component: 1
+      pin: 1
+  - to:
+      component: 2
+      pin: 1
+- link:
+  - from:
+      component: 2
+      pin: 1
+  - to:
+      component: 3
+      pin: 1

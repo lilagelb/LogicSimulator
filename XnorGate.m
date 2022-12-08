@@ -3,7 +3,7 @@ classdef XnorGate < Component
 
     methods
         function obj = XnorGate(position)
-            obj@Component(position);
+            obj@Component("xnor", position);
             obj.input_pins  = logical([0 0]);
             obj.output_pins = logical([0]);
 
