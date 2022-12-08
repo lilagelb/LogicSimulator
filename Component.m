@@ -59,6 +59,17 @@ classdef Component < handle
             hold(axes, "off");
         end
 
+        function set_input_pin(obj, pin, state)
+            %SET_INPUT_PIN Sets the given input pin to the given state 
+            % (either `logical(0)` or `logical(1)`)
+            obj.input_pins(pin) = state;
+        end
+        function state = get_output_pin(obj, pin)
+            %GET_OUTPUT_PIN Returns the state of the given output pin
+            %(either `logical(0)` or `logical(1)`)
+            state = obj.output_pins(pin);
+        end
+
         function pos = get_input_pin_position(obj, pin_number)
             %GET_INPUT_PIN_POSITION Returns the position of the specified
             %input pin on the plot, to allow lines to be drawn to/from it
