@@ -21,6 +21,9 @@ classdef NotGate < Component
             % encode pin positions
             obj.input_pin_displacements = [[0; 0]];
             obj.output_pin_displacements = [[10; 0]];
+
+            % encode hitbox (volume enclosed by triangle)
+            obj.hitbox = alphaShape(obj.shape{1}');
         end
 
         function update(obj)

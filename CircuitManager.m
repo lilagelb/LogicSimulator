@@ -31,7 +31,37 @@ classdef CircuitManager < handle
             new_link.from_pin = from_pin;
             new_link.to_component = to_component;
             new_link.to_pin = to_pin;
+            new_link.hitbox = alphaShape(build_rectangle( ...
+                obj.components{from_component}.get_output_pin_position(from_pin), ...
+                obj.components{to_component}.get_input_pin_position(to_pin), ...
+                2 ...
+            )');
             obj.links = [obj.links, new_link];
+        end
+
+        function remove_component(obj, component_id)
+            % remove the component from the component cell array
+            obj.components(component_id) = [];
+
+            % renumber the links to reflect the new component IDs, and
+            % delete any that actually go to the deleted component
+            for index = length(obj.links):-1:1
+                link = obj.links(index);
+                
+                if link.from_component == component_id || link.to_component == component_id                        
+                    obj.remove_link(index);
+                    continue;
+                end
+
+                obj.links(index).from_component ...
+                    = adjust_link_value_if_necessary(link.from_component, component_id);
+                obj.links(index).to_component ...
+                    = adjust_link_value_if_necessary(link.to_component, component_id);
+            end
+        end
+
+        function remove_link(obj, link_id)
+            obj.links(link_id) = [];
         end
 
         function [component, pin, input] = get_component_and_pin_from_position(obj, position)
@@ -73,15 +103,50 @@ classdef CircuitManager < handle
             %DRAW Draws the logic circuit, with the components in blue and
             %links in red
             for id = 1:length(obj.components)
-                obj.components{id}.draw(axes);
+                obj.components{id}.draw(axes, "b");
                 hold(axes, "on");
             end
             for link = obj.links
-                start_pos = obj.components{link.from_component}.get_output_pin_position(link.from_pin);
-                end_pos = obj.components{link.to_component}.get_input_pin_position(link.to_pin);
-                plot(axes, [start_pos(1), end_pos(1)], [start_pos(2), end_pos(2)], "r");
+                obj.draw_link(axes, link, "r");
             end
             hold(axes, "off");
+        end
+
+        function draw_link(obj, axes, link, linespec)
+            %DRAW_LINK Draws the given link on the given axes using the
+            %given linespec
+            start_pos = obj.components{link.from_component}.get_output_pin_position(link.from_pin);
+            end_pos = obj.components{link.to_component}.get_input_pin_position(link.to_pin);
+            plot(axes, [start_pos(1), end_pos(1)], [start_pos(2), end_pos(2)], linespec);
+        end
+
+        function [type, id] = get_type_and_id_of_clicked_object(obj, position)
+            % check if the click aligns with an object. If it does, return
+            % its type ("component" or "link") and its ID (positive
+            % integer). Else, return ["", 0]
+
+            for index = 1:length(obj.components)
+                component = obj.components{index};
+                if component.contains_point(position)
+                    % the click aligned with this component, so return
+                    type = "component";
+                    id = index;
+                    return;
+                end
+            end
+                    
+            % check if the click aligns with a link
+            for link = enumerate(obj.links)
+                if inShape(link.value.hitbox, position(1), position(2))
+                    % the click aligned with this link, so return
+                    type = "link";
+                    id = link.index;
+                    return;
+                end
+            end
+
+            type = "";
+            id = 0;
         end
 
         function serialise(obj, filepath)
@@ -96,7 +161,7 @@ classdef CircuitManager < handle
             );
 
             % serialise the components
-            serialisation = serialisation + "components:\n";
+            serialisation = serialisation + "\ncomponents:\n";
             for component_index = 1:length(obj.components)
                 component = obj.components{component_index};
                 type = component.get_type_printable();
@@ -203,5 +268,14 @@ classdef CircuitManager < handle
             % close the file
             fclose(filehandle);
         end
+    end
+end
+
+
+function new_value = adjust_link_value_if_necessary(current_value, threshold)
+    if current_value > threshold
+        new_value = current_value - 1;
+    else
+        new_value = current_value;
     end
 end

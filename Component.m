@@ -1,6 +1,6 @@
 classdef Component < handle
     %Component Base class for components
-    properties (Access = protected)
+    properties (Access = public)
         % 1 x n row vectors representing the state of each pin
         input_pins;
         output_pins;
@@ -28,6 +28,10 @@ classdef Component < handle
             -0.5 0.5;
         ]};
 
+        % the hitbox of the component, for selection purposes
+        % defined as an alphaShape
+        hitbox = alphaShape;
+
         % printable type (for serialisation)
         type_printable = "component"
     end
@@ -50,13 +54,13 @@ classdef Component < handle
             output = false;
         end
 
-        function draw(obj, axes)
+        function draw(obj, axes, linespec)
             %DRAW Draws the component's symbol with its centre at its
             %position
             num_lines = length(obj.shape);
             for i = 1:num_lines
                 line = translate_shape(obj.shape{i}, obj.position(1), obj.position(2));
-                plot(axes, line(1, :), line(2, :), "b");
+                plot(axes, line(1, :), line(2, :), linespec);
                 hold(axes, "on");
             end
             obj.additional_draw(axes);
@@ -113,6 +117,22 @@ classdef Component < handle
                     return;
                 end
             end
+        end
+
+        function is_contained = contains_point(obj, point)
+            %CONTAINS_POINT Returns whether the passed point is within the
+            %component's hitbox
+            
+            % transform the point to the object's origin, since it is about
+            % this that the hitbox is defined
+            point = point - obj.position;
+
+            if inShape(obj.hitbox, point(1), point(2))
+                is_contained = true;
+                return;
+            end
+            
+            is_contained = false;
         end
     end
 end

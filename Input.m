@@ -22,6 +22,9 @@ classdef Input < Component
 
             % encode pin positions
             obj.output_pin_displacements = [[6; 0]];
+
+            % encode hitbox
+            obj.hitbox = alphaShape(obj.shape{1}');
         end
 
         function update(obj)

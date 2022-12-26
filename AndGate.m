@@ -25,6 +25,9 @@ classdef AndGate < Component
             % encode pin positions
             obj.input_pin_displacements = [[0; -2], [0; 2]];
             obj.output_pin_displacements = [[10; 0]];
+
+            % encode hitbox (the central enclosed volume)
+            obj.hitbox = alphaShape([obj.shape{1}, obj.shape{2}]');
         end
 
         function update(obj)

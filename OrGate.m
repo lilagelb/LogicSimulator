@@ -25,6 +25,10 @@ classdef OrGate < Component
            % encode pin positions
            obj.input_pin_displacements = [[0; -2], [0; 2]];
            obj.output_pin_displacements = [[10; 0]]; 
+           
+           % encode hitbox (volume enclosed by two large curves and the
+           % line between their open ends)
+           obj.hitbox = alphaShape([obj.shape{1}, obj.shape{2}]');
         end
 
         function update(obj)
