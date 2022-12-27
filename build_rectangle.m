@@ -1,7 +1,8 @@
 function vertexes = build_rectangle(start_point, end_point, width)
-%BUILD_RECTANGLE Returns the rectangle symmetrical about start-end with its
-%ends on start and end respectively, with a width perpendicular to
-%start-end of that passed
+%BUILD_RECTANGLE 
+%Returns the rectangle symmetrical about the line start_point-end_point,
+%with the midpoints of the end sides on start_point and end_point, and a 
+%width perpendicular to the line start_point-end_point of that passed
 
 start_end = end_point - start_point;
 
@@ -15,8 +16,8 @@ initial_vertex = start_point - 0.5 * width * perpendicular;
 vertexes = [
     initial_vertex, ...
     start_point + 0.5 * width * perpendicular, ...
-    end_point + 0.5 * width * perpendicular, ...
-    end_point - 0.5 * width * perpendicular, ...
+    end_point   + 0.5 * width * perpendicular, ...
+    end_point   - 0.5 * width * perpendicular, ...
     initial_vertex
-]
+];
 end

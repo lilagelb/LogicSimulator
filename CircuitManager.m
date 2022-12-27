@@ -1,13 +1,20 @@
 classdef CircuitManager < handle
-    %CIRCUITMANAGER Manages the circuit as a whole
-    %Responsable for tracking links between components and updating the
+    %CIRCUITMANAGER 
+    %Encapsulates a logic circuit
+    %Responsible for tracking links between components and evaluating the
     %circuit state
 
     properties
-        % links are stored as a struct array
+        % links are stored as a struct array as below:
+        % link:
+        %   from_component: the ID of the component the link is from
+        %   from_pin:       the ID of the output pin the link is from
+        %   to_component:   the ID of the component the link is to
+        %   to_pin:         the ID of the output pin the link is to
+        %   hitbox:         an alphaShape describing the hitbox of the link for selection purposes
         links = [];
         
-        % components are stored as a cell array
+        % components are stored as a cell array of Components
         components = [];
         next_component_id = 1;
     end
@@ -17,16 +24,20 @@ classdef CircuitManager < handle
         end
 
         function component_id = add_component(obj, component)
-            %ADD_COMPONENT Adds a component to the circuit and returns the
-            %ID that will henceforth be used to identify it
+            %ADD_COMPONENT
+            %Adds a component to the circuit and returns the ID that will
+            %henceforth be used to identify it
+
             obj.components = [obj.components, {component}];
             component_id = obj.next_component_id;
             obj.next_component_id = obj.next_component_id + 1;
         end
 
         function add_link(obj, from_component, from_pin, to_component, to_pin)
-            %ADD_LINK Adds an electrical connection between an output pin
-            %of one component and an input pin of another
+            %ADD_LINK 
+            %Adds an electrical connection between an output pin of one
+            %component and an input pin of another
+
             new_link.from_component = from_component;
             new_link.from_pin = from_pin;
             new_link.to_component = to_component;
@@ -40,11 +51,15 @@ classdef CircuitManager < handle
         end
 
         function remove_component(obj, component_id)
+            %REMOVE_COMPONENT
+            %Removes the component identified by the passed ID from the
+            %circuit, and deletes any links to the component
+
             % remove the component from the component cell array
             obj.components(component_id) = [];
 
             % renumber the links to reflect the new component IDs, and
-            % delete any that actually go to the deleted component
+            % delete any that actually go to the now-deleted component
             for index = length(obj.links):-1:1
                 link = obj.links(index);
                 
@@ -61,14 +76,17 @@ classdef CircuitManager < handle
         end
 
         function remove_link(obj, link_id)
+            %REMOVE_LINK 
+            %Removes the link identified by the passed ID from the circuit
             obj.links(link_id) = [];
         end
 
         function [component, pin, input] = get_component_and_pin_from_position(obj, position)
-            %GET_COMPONENT_AND_PIN_FROM_POSITION Returns the component and
-            %pin number that occupies a position, as well as whether that
-            %pin is an input or an output
+            %GET_COMPONENT_AND_PIN_FROM_POSITION
+            %Returns the component and pin number that occupies a position,
+            %as well as whether that pin is an input or an output.
             %If no pin occupies the position, returns [0, 0, false]
+
             for n = 1:length(obj.components)
                 [pin, input] = obj.components{n}.get_pin_from_position(position);
                 if pin ~= 0
@@ -82,6 +100,11 @@ classdef CircuitManager < handle
         end
 
         function update(obj)
+            %UPDATE
+            %Updates the state of each component in turn based on the state
+            %of the circuit, updating the links from the component's
+            %output(s) afterwards
+
             for id = 1:length(obj.components)
                 % update the component
                 obj.components{id}.update();
@@ -91,8 +114,7 @@ classdef CircuitManager < handle
                     if link.from_component == id
                         obj.components{link.to_component}.set_input_pin( ...
                             link.to_pin, ...
-                            obj.components{link.from_component} ...
-                                .get_output_pin(link.from_pin) ...
+                            obj.components{link.from_component}.get_output_pin(link.from_pin) ...
                         );
                     end
                 end
@@ -100,8 +122,10 @@ classdef CircuitManager < handle
         end
 
         function draw(obj, axes)
-            %DRAW Draws the logic circuit, with the components in blue and
-            %links in red
+            %DRAW
+            %Draws the logic circuit on the passed axes, with the 
+            %components in blue and links in red
+
             for id = 1:length(obj.components)
                 obj.components{id}.draw(axes, "b");
                 hold(axes, "on");
@@ -113,21 +137,24 @@ classdef CircuitManager < handle
         end
 
         function draw_link(obj, axes, link, linespec)
-            %DRAW_LINK Draws the given link on the given axes using the
-            %given linespec
+            %DRAW_LINK
+            %Draws the link with the passed ID on the given axes using the
+            %passed LineSpec
+
             start_pos = obj.components{link.from_component}.get_output_pin_position(link.from_pin);
             end_pos = obj.components{link.to_component}.get_input_pin_position(link.to_pin);
             plot(axes, [start_pos(1), end_pos(1)], [start_pos(2), end_pos(2)], linespec);
         end
 
         function [type, id] = get_type_and_id_of_clicked_object(obj, position)
-            % check if the click aligns with an object. If it does, return
-            % its type ("component" or "link") and its ID (positive
-            % integer). Else, return ["", 0]
-
+            %GET_TYPE_AND_ID_OF_CLICKED_OBJECT
+            %Checks if the click position aligns with a circuit object. 
+            %If it does, returns the object's type ("component" or "link") 
+            %and its ID (positive integer). Else, returns ["", 0]
+            
+            % check if the click aligns with a component
             for index = 1:length(obj.components)
-                component = obj.components{index};
-                if component.contains_point(position)
+                if obj.components{index}.contains_point(position)
                     % the click aligned with this component, so return
                     type = "component";
                     id = index;
@@ -144,14 +171,16 @@ classdef CircuitManager < handle
                     return;
                 end
             end
-
+            
+            % the click aligned with nothing, so return the default values
             type = "";
             id = 0;
         end
 
         function serialise(obj, filepath)
-            %SERIALISE Serialises the class data into YAML for storage,
-            %using the filepath specified
+            %SERIALISE 
+            %Serialises the class data into an LSIM file (YAML-based) for
+            %storage, using the filepath specified
 
             % add the metadata header
             serialisation = sprintf( ...
@@ -166,6 +195,7 @@ classdef CircuitManager < handle
                 component = obj.components{component_index};
                 type = component.get_type_printable();
                 position = component.get_position();
+
                 serialisation = serialisation + sprintf( ...
                     "- component:\n" + ...
                     "    type: %s\n" + ...
@@ -173,6 +203,7 @@ classdef CircuitManager < handle
                     type, ...
                     position(1), position(2) ...
                 );
+
                 if type == "input" || type == "output"
                     serialisation = serialisation + sprintf( ...
                         "    label: %s\n", ...
@@ -204,8 +235,9 @@ classdef CircuitManager < handle
         end
 
         function deserialise(obj, filepath)
-            %DESERIALISE Deserialises the data from the filepath given and
-            %loads it into the class, overwriting existing data
+            %DESERIALISE
+            %Deserialises the data from the filepath given and loads it
+            %into the class, overwriting existing data
 
             % open the file
             filehandle = fopen(filepath, "r");
@@ -219,7 +251,7 @@ classdef CircuitManager < handle
             component_count = fscanf(filehandle, "component-count: %d\n", 1);
             link_count = fscanf(filehandle, "link-count: %d\n", 1);
             
-            % read the components
+            % read in the components
             fscanf(filehandle, "\ncomponents:\n", 1);
             for n = 1:component_count
                 type = fscanf(filehandle, ...
@@ -250,7 +282,7 @@ classdef CircuitManager < handle
                 end
             end
 
-            % read the links
+            % read in the links
             fscanf(filehandle, "\nlinks:\n", 1);
             for n = 1:link_count
                 from_component = fscanf(filehandle, ...
@@ -273,6 +305,11 @@ end
 
 
 function new_value = adjust_link_value_if_necessary(current_value, threshold)
+    %ADJUST_LINK_VALUE_IF_NECESSARY
+    %Checks if current_value is above the threshold, and if it is, return
+    %current_value - 1.
+    %Used for updating links in the event a component is deleted
+    
     if current_value > threshold
         new_value = current_value - 1;
     else

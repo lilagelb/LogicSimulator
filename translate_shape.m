@@ -1,8 +1,9 @@
-function new_coordinates = translate_shape(vertexes, a, b)
+function translated_vertices = translate_shape(vertexes, a, b)
 %TRANSLATE_SHAPE
-%translates the coordinates passed in via vertexes by [a; b]
+%translates the coordinates passed in via vertexes by [a; b], and returns
+%the translated vertices
 
-new_coordinates = vertexes + [a; b];
+translated_vertices = vertexes + [a; b];
 
 end
 

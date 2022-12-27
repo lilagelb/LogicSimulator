@@ -1,9 +1,11 @@
 classdef Output < Component
-    %OUTPUT Represents an output of the logic circuit
+    %OUTPUT
+    %Encapsulates the behaviour of an output from a logic circuit
 
     properties
+        % initialise internal output state
         output = logical(0);
-        label;
+        label = "";
     end
 
     methods
@@ -11,14 +13,16 @@ classdef Output < Component
             obj@Component("output", position);
             obj.label = label;
 
-            % set up pins
+            % initialise pins
             obj.input_pins  = logical([0]);
             obj.output_pins = logical([]);
 
             % encode shape
-            obj.shape = {[  % main arrow shape
+            obj.shape = {[  
+                % main arrow shape
                 [1; -1], [6; -1], [7; 0], [6; 1], [1; 1], [1; -1]
-            ], [            % input pin
+            ], [            
+                % input pin
                 [0; 0], [1; 0]
             ]};
 
@@ -30,12 +34,16 @@ classdef Output < Component
         end
 
         function update(obj)
-            %UPDATE Updates the output's state
+            %UPDATE
+            %Updates the output's internal output state based on the input
+            %state
             obj.output = obj.input_pins(1);
         end
     end
     methods (Access = protected)
         function additional_draw(obj, axes)
+            %ADDITIONAL_DRAW
+            %Draw the text that displays the output's label
             text(axes, obj.position(1) + 1.5, obj.position(2), obj.label, "Color", "blue");
         end
     end
