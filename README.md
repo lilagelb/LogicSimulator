@@ -6,6 +6,7 @@ A basic GUI-based logic circuit simulator for steady-state logic circuit creatio
 
 > Note: it is currently the case that if a point that is part of a line on the circuit diagram is clicked, the click callback won't fire and the click won't be processed. It is necessary to take advantage of the grid snapping and click near to the desired point instead
 
+> Note: the software doesn't currently warn the user before overwriting unsaved data. Take care when creating new files and opening existing files.
 
 # The LSIM File Format
 LogicSimulator files use the `.lsim` file extension, and are plaintext [YAML](https://en.wikipedia.org/wiki/YAML) that follows the format below (using the [half adder](circuits/half_adder.lsim) as an example). The file is split into 3 sections, each separated by a single blank line.
