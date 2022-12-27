@@ -1,0 +1,70 @@
+component-count: 6
+link-count: 6
+
+components:
+- component:
+    type: input
+    position: [20, 20]
+    label: in1
+- component:
+    type: input
+    position: [20, -20]
+    label: in2
+- component:
+    type: and
+    position: [50, 10]
+- component:
+    type: xor
+    position: [50, -10]
+- component:
+    type: output
+    position: [80, 10]
+    label: out1
+- component:
+    type: output
+    position: [80, -10]
+    label: out2
+
+links:
+- link:
+  - from:
+      component: 1
+      pin: 1
+  - to:
+      component: 3
+      pin: 2
+- link:
+  - from:
+      component: 1
+      pin: 1
+  - to:
+      component: 4
+      pin: 2
+- link:
+  - from:
+      component: 2
+      pin: 1
+  - to:
+      component: 3
+      pin: 1
+- link:
+  - from:
+      component: 2
+      pin: 1
+  - to:
+      component: 4
+      pin: 1
+- link:
+  - from:
+      component: 3
+      pin: 1
+  - to:
+      component: 5
+      pin: 1
+- link:
+  - from:
+      component: 4
+      pin: 1
+  - to:
+      component: 6
+      pin: 1
