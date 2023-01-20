@@ -16,7 +16,6 @@ classdef CircuitManager < handle
         
         % components are stored as a cell array of Components
         components = [];
-        next_component_id = 1;
     end
 
     methods
@@ -29,8 +28,7 @@ classdef CircuitManager < handle
             %henceforth be used to identify it
 
             obj.components = [obj.components, {component}];
-            component_id = obj.next_component_id;
-            obj.next_component_id = obj.next_component_id + 1;
+            component_id = length(obj.components);
         end
 
         function add_link(obj, from_component, from_pin, to_component, to_pin)
@@ -245,7 +243,6 @@ classdef CircuitManager < handle
             % clear existing data
             obj.components = [];
             obj.links = [];
-            obj.next_component_id = 1;
 
             % read and process the header
             component_count = fscanf(filehandle, "component-count: %d\n", 1);
