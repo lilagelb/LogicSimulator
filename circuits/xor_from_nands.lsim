@@ -1,0 +1,93 @@
+component-count: 7
+link-count: 9
+
+components:
+- component:
+    type: input
+    position: [0, 20]
+    label: in1
+- component:
+    type: input
+    position: [0, -20]
+    label: in2
+- component:
+    type: nand
+    position: [20, 0]
+- component:
+    type: nand
+    position: [40, 10]
+- component:
+    type: nand
+    position: [40, -10]
+- component:
+    type: nand
+    position: [60, 0]
+- component:
+    type: output
+    position: [80, 0]
+    label: out1
+
+links:
+- link:
+  - from:
+      component: 1
+      pin: 1
+  - to:
+      component: 4
+      pin: 2
+- link:
+  - from:
+      component: 1
+      pin: 1
+  - to:
+      component: 3
+      pin: 2
+- link:
+  - from:
+      component: 2
+      pin: 1
+  - to:
+      component: 3
+      pin: 1
+- link:
+  - from:
+      component: 2
+      pin: 1
+  - to:
+      component: 5
+      pin: 1
+- link:
+  - from:
+      component: 3
+      pin: 1
+  - to:
+      component: 4
+      pin: 1
+- link:
+  - from:
+      component: 3
+      pin: 1
+  - to:
+      component: 5
+      pin: 2
+- link:
+  - from:
+      component: 5
+      pin: 1
+  - to:
+      component: 6
+      pin: 1
+- link:
+  - from:
+      component: 4
+      pin: 1
+  - to:
+      component: 6
+      pin: 2
+- link:
+  - from:
+      component: 6
+      pin: 1
+  - to:
+      component: 7
+      pin: 1
